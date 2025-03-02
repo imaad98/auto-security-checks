@@ -50,27 +50,27 @@ cd secure-flask-app
 
 ### 2. Set Up the Flask App
 
-#### 1. Install dependencies:
+### 1. Install dependencies:
 ```bash
 pip install flask
 
-#### 2. Run the app:
+### 2. Run the app:
 ```bash
 python3 app.py
 
-#### 3. Open your browser and navigate to http://localhost:5000.
+### 3. Open your browser and navigate to http://localhost:5000.
 
 ### 3. Set Up Docker
 
-#### 1. Build the Docker image:
+### 1. Build the Docker image:
 ```bash
 docker build -t your-docker-username/auto-security-checks .
 
-#### 2. Run the Docker container:
+### 2. Run the Docker container:
 ```bash
 docker run -p 5000:5000 your-docker-username/auto-security-checks
 
-#### 3. Open your browser and navigate to http://localhost:5000.
+### 3. Open your browser and navigate to http://localhost:5000.
 
 ### 4. Set Up CI/CD Pipeline
 

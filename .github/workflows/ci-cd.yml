@@ -1,0 +1,50 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install flask
+
+      - name: Run SonarQube Scan (SAST)
+        uses: SonarSource/sonarqube-scan-action@master
+        with:
+          projectKey: auto-security-checks
+          host: http://localhost:9000  # Update if using a remote SonarQube instance
+          token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Run OWASP ZAP Scan (DAST)
+        uses: zaproxy/action-baseline@v0.6.0
+        with:
+          target: 'http://localhost:5000'  # Ensure Flask is running before this step
+
+      - name: Build Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/flask-app2
+
+      - name: Scan Docker image with Trivy
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image your-docker-username/your-app-name
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push your-docker-username/your-app-name
+
